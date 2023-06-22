@@ -61,7 +61,7 @@ const oldHelpMenu = "" +
 "!mjolnir powerlevel <user ID> <power level> [room alias/ID]         - Sets the power level of the user in the specified room (or all protected rooms)\n" +
 "!mjolnir help                                                       - This menu\n";
 
-function renderTableHelp(table: CommandTable): DocumentNode {
+export function renderTableHelp(table: CommandTable): DocumentNode {
     // FIXME: is it possible to force case of table names?
     return <fragment>
         <details>
