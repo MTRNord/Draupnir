@@ -12,7 +12,6 @@ import { DocumentNode } from "./DeadDocument";
 import { renderMatrixAndSend } from "./DeadDocumentMatrix";
 import { CommandException } from "./CommandException";
 import { LogService } from "matrix-bot-sdk";
-import { renderTableHelp } from "../Help";
 
 function requiredArgument(argumentName: string): string {
     return `<${argumentName}>`;
@@ -62,6 +61,17 @@ export function renderCommandHelp(command: InterfaceCommand<BaseFunction>): stri
         ...rest ? [restArgument(rest)] : [],
         ...Object.keys(keywords.description).map(k => keywordArgument(k)),
     ].join(' ');
+}
+
+function renderTableHelp(table: CommandTable): DocumentNode {
+    // FIXME: is it possible to force case of table names?
+    return <fragment>
+        <details>
+            <summary><b>{table.name} commands:</b></summary>
+            {table.getExportedCommands().map(renderCommandSummary)}
+            {table.getImportedTables().map(renderTableHelp)}
+        </details>
+    </fragment>
 }
 
 export async function renderHelp(client: MatrixSendClient, commandRoomId: string, event: any, result: CommandResult<CommandTable, CommandError>): Promise<void> {
