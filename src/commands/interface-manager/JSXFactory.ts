@@ -7,9 +7,9 @@ import { DocumentNode, LeafNode, makeDocumentNode, makeLeafNode, NodeTag, TextNo
 import { findPresentationRenderer } from "./DeadDocumentPresentation";
 import { presentationTypeOf } from "./ParameterParsing";
 
-type rawJSX = DocumentNode|LeafNode|string|number|Array<rawJSX>;
+type rawJSX = DocumentNode | LeafNode | string | number | Array<rawJSX>;
 
-export function JSXFactory(tag: NodeTag, properties: any, ...rawChildren: (DocumentNode|LeafNode|string)[]) {
+export function JSXFactory(tag: NodeTag, properties: any, ...rawChildren: (DocumentNode | LeafNode | string)[]) {
     const node = makeDocumentNode(tag);
     if (properties) {
         for (const [key, value] of Object.entries(properties)) {
@@ -23,13 +23,15 @@ export function JSXFactory(tag: NodeTag, properties: any, ...rawChildren: (Docum
             makeLeafNode<TextNode>(NodeTag.TextNode, node, (rawChild as number).toString());
         } else if (Array.isArray(rawChild)) {
             rawChild.forEach(ensureChild);
-        // Then it's a DocumentNode|LeafNode
+            // Then it's a DocumentNode|LeafNode
         } else if (typeof rawChild?.leafNode === 'boolean') {
             if (rawChild.tag === NodeTag.Fragment) {
                 (rawChild as DocumentNode).getChildren().forEach(node.addChild, node);
             } else {
                 node.addChild(rawChild);
             }
+        } else if (rawChild == undefined) {
+            // No-OP
         } else {
             const presentationType = presentationTypeOf(rawChild);
             if (presentationType !== undefined) {
