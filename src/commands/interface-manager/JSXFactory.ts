@@ -16,7 +16,7 @@ export function JSXFactory(tag: NodeTag, properties: any, ...rawChildren: (Docum
             node.attributeMap.set(key, value);
         }
     }
-    const ensureChild = (rawChild: rawJSX) => {
+    const ensureChild = (rawChild?: rawJSX) => {
         if (typeof rawChild === 'string') {
             makeLeafNode<TextNode>(NodeTag.TextNode, node, rawChild);
         } else if (typeof rawChild === 'number') {
@@ -24,7 +24,7 @@ export function JSXFactory(tag: NodeTag, properties: any, ...rawChildren: (Docum
         } else if (Array.isArray(rawChild)) {
             rawChild.forEach(ensureChild);
         // Then it's a DocumentNode|LeafNode
-        } else if (typeof rawChild.leafNode === 'boolean') {
+        } else if (typeof rawChild?.leafNode === 'boolean') {
             if (rawChild.tag === NodeTag.Fragment) {
                 (rawChild as DocumentNode).getChildren().forEach(node.addChild, node);
             } else {
